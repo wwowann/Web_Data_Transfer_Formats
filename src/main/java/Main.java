@@ -1,3 +1,4 @@
+import request.Request;
 import server.Server;
 
 import java.io.*;
@@ -84,7 +85,7 @@ public class Main {
                                 "Content-Type: " + mimeType + "\r\n" +
                                 "Content-Length: " + length + "\r\n" +
                                 "Connection: close\r\n" +
-                                "\r\n"
+                                "\r\n" + request.getBody()
                 ).getBytes());
                 Files.copy(filePath, out);
                 out.flush();
