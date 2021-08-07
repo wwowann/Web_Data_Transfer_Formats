@@ -1,18 +1,8 @@
 package request;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public class Request {
@@ -54,7 +44,8 @@ public class Request {
         return headers;
     }
 
-    public String getBody() {return body;
+    public String getBody() {
+        return body;
     }
 
     public static Request fromInputStream(InputStream inn) throws IOException {
@@ -157,8 +148,8 @@ public class Request {
 
             }
         }
-            return new Request(method, path, headerMap, body);
-        }
+        return new Request(method, path, headerMap, body);
+    }
 
     private static Optional<String> extractHeader(List<String> headers, String header) {
         return headers.stream()

@@ -5,9 +5,6 @@ import request.Request;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,9 +74,9 @@ public class Server {
             File fileDirectory = new File(validPaths);
             for (File f : Objects.requireNonNull(fileDirectory.listFiles())) {
                 if (f.isFile() && f.getName().equals(request.getPath().substring(1))) {
-                        handler = handlerMap.get("*.*");
-                    }
+                    handler = handlerMap.get("*.*");
                 }
+            }
             if (handler == null) handler = handlerMap.get(request.getPath());
             if (handler == null) {
                 ifNotFoundHandler.handle(request, out);
