@@ -2,30 +2,24 @@ package server;
 
 import request.Request;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.util.HashMap;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
 public class Server {
-    //    //    final List<String> validPaths = List.of("/index.html", "/spring.svg", "/spring.png",
-////            "/resources.html", "/styles.css", "/app.js", "/links.html", "/forms.html",
-////            "/classic.html", "/events.html", "/events.js");
     private final ExecutorService executorService;
     private final Map<String, Map<String, Handler>> handlers;
+    private Handler handler;
+    private final String validPaths = "public/messages";
     private final Handler ifNotFoundHandler = (request, out) -> {
         try {
             out.write((
@@ -39,7 +33,6 @@ public class Server {
             e.printStackTrace();
         }
     };
-
 
     public Server(int threadPool) {
         this.executorService = Executors.newFixedThreadPool(threadPool);
@@ -81,8 +74,13 @@ public class Server {
                 ifNotFoundHandler.handle(request, out);
                 return;
             }
-
-            var handler = handlerMap.get(request.getPath());
+            File fileDirectory = new File(validPaths);
+            for (File f : Objects.requireNonNull(fileDirectory.listFiles())) {
+                if (f.isFile() && f.getName().equals(request.getPath().substring(1))) {
+                        handler = handlerMap.get("*.*");
+                    }
+                }
+            if (handler == null) handler = handlerMap.get(request.getPath());
             if (handler == null) {
                 ifNotFoundHandler.handle(request, out);
                 return;

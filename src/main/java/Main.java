@@ -16,7 +16,7 @@ public class Main {
             try {
                 final var filePath = Path.of(".", "public", request.getPath());//считываем ресурс из папки public
                 final var mimeType = Files.probeContentType(filePath);
-                final var template = Files.readString(filePath);
+                final var template = Files.readString(filePath);//содержимое файла
                 final var content = template.replace(
                         "{time}",
                         LocalDateTime.now().toString()
@@ -35,11 +35,10 @@ public class Main {
             }
         }));
 
-        server.addHandler("GET", "/index.html", ((request, out) -> {
-            final var filePath = Path.of(".", "public/messages", request.getPath());
-            final String mimeType;
+        server.addHandler("GET", "*.*", ((request, out) -> {
             try {
-                mimeType = Files.probeContentType(filePath);
+                final var filePath = Path.of(".", "public/messages", request.getPath());
+                final String mimeType = Files.probeContentType(filePath);
                 final long length = Files.size(filePath);
                 out.write((
                         "HTTP/1.1 200 OK\r\n" +
@@ -55,30 +54,10 @@ public class Main {
             }
         }));
 
-        server.addHandler("GET", "/page.html", ((request, out) -> {
-            final var filePath = Path.of(".", "public/messages", request.getPath());
-            final String mimeType;
+        server.addHandler("POST", "*.*", ((request, out) -> {
             try {
-                mimeType = Files.probeContentType(filePath);
-                final long length = Files.size(filePath);
-                out.write((
-                        "HTTP/1.1 200 OK\r\n" +
-                                "Content-Type: " + mimeType + "\r\n" +
-                                "Content-Length: " + length + "\r\n" +
-                                "Connection: close\r\n" +
-                                "\r\n"
-                ).getBytes());
-                Files.copy(filePath, out);
-                out.flush();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        }));
-        server.addHandler("POST", "/page.html", ((request, out) -> {
-            final var filePath = Path.of(".", "public/messages", request.getPath());
-            final String mimeType;
-            try {
-                mimeType = Files.probeContentType(filePath);
+                final var filePath = Path.of(".", "public/messages", request.getPath());
+                final String mimeType = Files.probeContentType(filePath);
                 final long length = Files.size(filePath);
                 out.write((
                         "HTTP/1.1 200 OK\r\n" +
